@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="light">
 <title>B3A · Fu Tai ⇄ Shenzhen Bay Port</title>
 <style>
   :root{
-    --bg:#070a12;
-    --card:rgba(255,255,255,.055);
-    --line:rgba(255,255,255,.09);
-    --text:#e9edf7;
-    --muted:#8d97ad;
-    --accent:#ffd24a;
-    --accent-soft:rgba(255,210,74,.14);
-    --danger:#ff7a7a;
-    --ok:#43e08a;
+    --bg:#dfe6dd;
+    --card:#f4f7f1;
+    --line:rgba(56,78,62,.15);
+    --text:#33423a;
+    --muted:#63716a;
+    --accent:#55785f;
+    --accent-soft:rgba(85,120,95,.12);
+    --danger:#a86f64;
+    --ok:#719a78;
     --radius:26px;
   }
   *{box-sizing:border-box}
@@ -29,7 +29,7 @@
     justify-content:center;
     padding:28px 18px;
     background:
-      radial-gradient(1100px 560px at 50% -12%, #1a2a4a 0%, #0a1020 52%, var(--bg) 100%);
+      radial-gradient(1100px 560px at 50% -12%, #f8faf5 0%, #eaf0e7 46%, var(--bg) 100%);
     color:var(--text);
     font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans TC","Microsoft JhengHei",sans-serif;
     -webkit-font-smoothing:antialiased;
@@ -46,9 +46,9 @@
     width:100%;
     border-radius:var(--radius);
     padding:26px 26px 20px;
-    background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.022));
-    border:1px solid var(--line);
-    box-shadow:0 34px 90px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.08);
+    background:linear-gradient(180deg,rgba(255,255,255,.8),rgba(255,255,255,.52));
+    border:1px solid rgba(56,78,62,.16);
+    box-shadow:0 24px 60px rgba(56,78,62,.14), inset 0 1px 0 rgba(255,255,255,.9);
     backdrop-filter:blur(12px);
   }
   .top{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -56,9 +56,9 @@
   .badge{
     display:inline-flex;align-items:center;justify-content:center;
     min-width:64px;padding:7px 12px;border-radius:12px;
-    background:linear-gradient(180deg,#ffe071,#ffc400);
-    color:#171203;font-weight:800;font-size:22px;letter-spacing:.02em;
-    box-shadow:0 6px 18px rgba(255,196,0,.22);
+    background:linear-gradient(180deg,#7d9c84,#5f8068);
+    color:#f7faf6;font-weight:800;font-size:22px;letter-spacing:.02em;
+    box-shadow:0 6px 16px rgba(79,113,89,.25);
   }
   .op{font-size:13px;color:var(--muted);letter-spacing:.04em}
   .live{
@@ -66,16 +66,16 @@
     font-size:11px;letter-spacing:.14em;text-transform:uppercase;
     color:var(--muted);
     border:1px solid var(--line);border-radius:999px;padding:6px 11px;
-    background:rgba(255,255,255,.03);
+    background:rgba(255,255,255,.55);
     flex:none;
   }
-  .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(67,224,138,.55);animation:pulse 2s infinite}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(113,154,120,.5);animation:pulse 2s infinite}
   .live.stale .dot{background:var(--accent);animation:none;box-shadow:none}
   .live.offline .dot{background:var(--danger);animation:none;box-shadow:none}
   @keyframes pulse{
-    0%{box-shadow:0 0 0 0 rgba(67,224,138,.5)}
-    70%{box-shadow:0 0 0 7px rgba(67,224,138,0)}
-    100%{box-shadow:0 0 0 0 rgba(67,224,138,0)}
+    0%{box-shadow:0 0 0 0 rgba(113,154,120,.5)}
+    70%{box-shadow:0 0 0 7px rgba(113,154,120,0)}
+    100%{box-shadow:0 0 0 0 rgba(113,154,120,0)}
   }
 
   .od{
@@ -99,7 +99,7 @@
     font-size:clamp(76px,19vw,108px);
     font-weight:800;line-height:.9;letter-spacing:-.05em;
     color:var(--accent);
-    text-shadow:0 0 44px rgba(255,210,74,.22);
+    text-shadow:0 0 40px rgba(85,120,95,.18);
     font-variant-numeric:tabular-nums;
   }
   .hero-value.due{font-size:clamp(56px,14vw,80px);letter-spacing:-.03em}
@@ -108,7 +108,7 @@
   .hero-sub b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
   .remark{
     font-size:11px;padding:3px 8px;border-radius:6px;
-    background:var(--accent-soft);color:var(--accent);letter-spacing:.02em;
+    background:var(--accent-soft);color:#4d6d56;letter-spacing:.02em;
   }
 
   .list-title{
@@ -118,7 +118,7 @@
   ul.list{list-style:none;margin:0;padding:0}
   ul.list li{
     display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:center;
-    padding:13px 2px;border-top:1px dashed rgba(255,255,255,.075);
+    padding:13px 2px;border-top:1px dashed rgba(56,78,62,.14);
   }
   ul.list li:first-child{border-top:0}
   .row-time{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
@@ -132,8 +132,8 @@
   .empty,.error{
     margin-top:14px;padding:14px 16px;border-radius:14px;font-size:13px;line-height:1.5;
   }
-  .empty{background:rgba(255,255,255,.035);border:1px dashed var(--line);color:var(--muted)}
-  .error{background:rgba(255,122,122,.09);border:1px solid rgba(255,122,122,.28);color:#ffb3b3}
+  .empty{background:rgba(255,255,255,.55);border:1px dashed var(--line);color:var(--muted)}
+  .error{background:rgba(168,111,100,.1);border:1px solid rgba(168,111,100,.32);color:#8a574c}
 
   footer{
     margin-top:18px;padding-top:14px;border-top:1px solid var(--line);
@@ -141,25 +141,25 @@
     font-size:11px;color:var(--muted);
   }
   .meta{line-height:1.6}
-  .meta b{color:#c3cad8;font-weight:600;font-variant-numeric:tabular-nums}
+  .meta b{color:#2c3a33;font-weight:600;font-variant-numeric:tabular-nums}
   button{
     font:inherit;font-size:12px;font-weight:600;
-    color:var(--text);background:rgba(255,255,255,.06);
+    color:var(--text);background:rgba(255,255,255,.6);
     border:1px solid var(--line);border-radius:10px;
     padding:8px 12px;cursor:pointer;
     display:inline-flex;align-items:center;gap:7px;
     transition:background .18s ease, transform .06s ease;
   }
-  button:hover{background:rgba(255,255,255,.11)}
+  button:hover{background:#fff}
   button:active{transform:scale(.97)}
   button[disabled]{opacity:.55;cursor:progress}
   button svg{transition:transform .5s ease}
   button[disabled] svg{transform:rotate(180deg)}
 
-  .progress{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.05)}
+  .progress{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(56,78,62,.08)}
   .progress i{
     display:block;height:100%;width:100%;transform-origin:left center;
-    background:linear-gradient(90deg,#ffc400,#ffe071);
+    background:linear-gradient(90deg,#8aa98f,#b3c9b7);
     animation:shrink 30s linear forwards;
   }
   @keyframes shrink{from{transform:scaleX(1)}to{transform:scaleX(0)}}
