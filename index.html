@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>B3A · Fu Tai ⇄ Shenzhen Bay Port</title>
+<style>
+  :root{
+    --bg:#070a12;
+    --card:rgba(255,255,255,.055);
+    --line:rgba(255,255,255,.09);
+    --text:#e9edf7;
+    --muted:#8d97ad;
+    --accent:#ffd24a;
+    --accent-soft:rgba(255,210,74,.14);
+    --danger:#ff7a7a;
+    --ok:#43e08a;
+    --radius:26px;
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none !important}
+  html{height:100%}
+  body{
+    margin:0;
+    min-height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px 18px;
+    background:
+      radial-gradient(1100px 560px at 50% -12%, #1a2a4a 0%, #0a1020 52%, var(--bg) 100%);
+    color:var(--text);
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans TC","Microsoft JhengHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    width:min(520px,100%);
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  .card{
+    position:relative;
+    overflow:hidden;
+    width:100%;
+    border-radius:var(--radius);
+    padding:26px 26px 20px;
+    background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.022));
+    border:1px solid var(--line);
+    box-shadow:0 34px 90px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.08);
+    backdrop-filter:blur(12px);
+  }
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .route{display:flex;align-items:center;gap:10px}
+  .badge{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:64px;padding:7px 12px;border-radius:12px;
+    background:linear-gradient(180deg,#ffe071,#ffc400);
+    color:#171203;font-weight:800;font-size:22px;letter-spacing:.02em;
+    box-shadow:0 6px 18px rgba(255,196,0,.22);
+  }
+  .op{font-size:13px;color:var(--muted);letter-spacing:.04em}
+  .live{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);
+    border:1px solid var(--line);border-radius:999px;padding:6px 11px;
+    background:rgba(255,255,255,.03);
+    flex:none;
+  }
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(67,224,138,.55);animation:pulse 2s infinite}
+  .live.stale .dot{background:var(--accent);animation:none;box-shadow:none}
+  .live.offline .dot{background:var(--danger);animation:none;box-shadow:none}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(67,224,138,.5)}
+    70%{box-shadow:0 0 0 7px rgba(67,224,138,0)}
+    100%{box-shadow:0 0 0 0 rgba(67,224,138,0)}
+  }
+
+  .od{
+    margin-top:20px;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    font-size:19px;font-weight:650;letter-spacing:-.01em;
+  }
+  .od .zh{font-weight:700}
+  .od .en{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-top:2px;letter-spacing:.01em}
+  .od .dest{text-align:left}
+  .arrow{color:var(--muted);font-size:16px;margin:0 1px;transform:translateY(-6px)}
+  .note{
+    margin:8px 0 0;font-size:11px;line-height:1.5;color:var(--muted);
+    letter-spacing:.01em;
+  }
+
+  .hero{padding:22px 0 18px;border-bottom:1px solid var(--line)}
+  .hero-label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+  .hero-row{display:flex;align-items:baseline;gap:8px;margin-top:6px}
+  .hero-value{
+    font-size:clamp(76px,19vw,108px);
+    font-weight:800;line-height:.9;letter-spacing:-.05em;
+    color:var(--accent);
+    text-shadow:0 0 44px rgba(255,210,74,.22);
+    font-variant-numeric:tabular-nums;
+  }
+  .hero-value.due{font-size:clamp(56px,14vw,80px);letter-spacing:-.03em}
+  .unit{font-size:22px;font-weight:600;color:var(--muted);letter-spacing:0}
+  .hero-sub{margin-top:10px;font-size:14px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .hero-sub b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+  .remark{
+    font-size:11px;padding:3px 8px;border-radius:6px;
+    background:var(--accent-soft);color:var(--accent);letter-spacing:.02em;
+  }
+
+  .list-title{
+    margin:16px 0 2px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  ul.list{list-style:none;margin:0;padding:0}
+  ul.list li{
+    display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:center;
+    padding:13px 2px;border-top:1px dashed rgba(255,255,255,.075);
+  }
+  ul.list li:first-child{border-top:0}
+  .row-time{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+  .row-time span{color:var(--muted);font-weight:500;font-size:12px;margin-left:8px}
+  .row-min{
+    font-size:15px;font-weight:700;color:var(--accent);
+    font-variant-numeric:tabular-nums;white-space:nowrap;
+  }
+  .row-min .m{font-size:11px;color:var(--muted);font-weight:500}
+
+  .empty,.error{
+    margin-top:14px;padding:14px 16px;border-radius:14px;font-size:13px;line-height:1.5;
+  }
+  .empty{background:rgba(255,255,255,.035);border:1px dashed var(--line);color:var(--muted)}
+  .error{background:rgba(255,122,122,.09);border:1px solid rgba(255,122,122,.28);color:#ffb3b3}
+
+  footer{
+    margin-top:18px;padding-top:14px;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    font-size:11px;color:var(--muted);
+  }
+  .meta{line-height:1.6}
+  .meta b{color:#c3cad8;font-weight:600;font-variant-numeric:tabular-nums}
+  button{
+    font:inherit;font-size:12px;font-weight:600;
+    color:var(--text);background:rgba(255,255,255,.06);
+    border:1px solid var(--line);border-radius:10px;
+    padding:8px 12px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:7px;
+    transition:background .18s ease, transform .06s ease;
+  }
+  button:hover{background:rgba(255,255,255,.11)}
+  button:active{transform:scale(.97)}
+  button[disabled]{opacity:.55;cursor:progress}
+  button svg{transition:transform .5s ease}
+  button[disabled] svg{transform:rotate(180deg)}
+
+  .progress{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.05)}
+  .progress i{
+    display:block;height:100%;width:100%;transform-origin:left center;
+    background:linear-gradient(90deg,#ffc400,#ffe071);
+    animation:shrink 30s linear forwards;
+  }
+  @keyframes shrink{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+
+  .source{
+    margin:2px 0 0;text-align:center;font-size:11px;line-height:1.5;
+    color:var(--muted);opacity:.85;letter-spacing:.02em;
+  }
+  @media (prefers-reduced-motion:reduce){
+    .dot{animation:none}
+    .progress i{animation:none;opacity:.5}
+  }
+  @media (max-width:420px){
+    .card{padding:22px 20px 18px;border-radius:22px}
+    .badge{min-width:56px;font-size:19px}
+    .od{font-size:17px}
+    body{padding:18px 12px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Fu Tai Estate → Shenzhen Bay Port -->
+  <main class="card" data-card="out">
+    <header class="top">
+      <div class="route">
+        <span class="badge">B3A</span>
+        <span class="op">Citybus</span>
+      </div>
+      <div class="live" data-field="live"><span class="dot"></span><span data-field="liveText">Live</span></div>
+    </header>
+
+    <div class="od">
+      <div class="dest">
+        <span class="zh">富泰邨</span>
+        <span class="en">Fu Tai Estate</span>
+      </div>
+      <span class="arrow">→</span>
+      <div class="dest">
+        <span class="zh">深圳灣口岸</span>
+        <span class="en">Shenzhen Bay Port</span>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-label">Next bus in</div>
+      <div class="hero-row">
+        <span class="hero-value" data-field="nextMin">—</span>
+        <span class="unit" data-field="nextUnit"></span>
+      </div>
+      <div class="hero-sub" data-field="nextSub">Connecting to DATA.GOV.HK…</div>
+    </section>
+
+    <div class="list-title" data-field="listTitle" hidden>
+      <span>Following departures</span>
+      <span data-field="listCount"></span>
+    </div>
+    <ul class="list" data-field="laterList"></ul>
+
+    <div class="empty" data-field="empty" hidden></div>
+    <div class="error" data-field="error" hidden></div>
+
+    <footer>
+      <div class="meta">
+        <div>Updated <b data-field="updated">—</b> · HKT</div>
+        <div>Auto-refresh every 30 s</div>
+      </div>
+      <button type="button" data-field="refresh" aria-label="Refresh outbound departures">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+          <path d="M21 3v6h-6"/>
+        </svg>
+        Refresh
+      </button>
+    </footer>
+
+    <div class="progress"><i data-field="bar"></i></div>
+  </main>
+
+  <!-- Shenzhen Bay Port → Fu Tai -->
+  <main class="card" data-card="in">
+    <header class="top">
+      <div class="route">
+        <span class="badge">B3A</span>
+        <span class="op">Citybus</span>
+      </div>
+      <div class="live" data-field="live"><span class="dot"></span><span data-field="liveText">Live</span></div>
+    </header>
+
+    <div class="od">
+      <div class="dest">
+        <span class="zh">深圳灣口岸</span>
+        <span class="en">Shenzhen Bay Port</span>
+      </div>
+      <span class="arrow">→</span>
+      <div class="dest">
+        <span class="zh">富泰商場</span>
+        <span class="en">Fu Tai Shopping Centre</span>
+      </div>
+    </div>
+    <p class="note">Return trip · alight here for Fu Tai Estate · the route continues to Shan King Estate</p>
+
+    <section class="hero">
+      <div class="hero-label">Next bus from the port</div>
+      <div class="hero-row">
+        <span class="hero-value" data-field="nextMin">—</span>
+        <span class="unit" data-field="nextUnit"></span>
+      </div>
+      <div class="hero-sub" data-field="nextSub">Connecting to DATA.GOV.HK…</div>
+    </section>
+
+    <div class="list-title" data-field="listTitle" hidden>
+      <span>Following departures</span>
+      <span data-field="listCount"></span>
+    </div>
+    <ul class="list" data-field="laterList"></ul>
+
+    <div class="empty" data-field="empty" hidden></div>
+    <div class="error" data-field="error" hidden></div>
+
+    <footer>
+      <div class="meta">
+        <div>Updated <b data-field="updated">—</b> · HKT</div>
+        <div>Auto-refresh every 30 s</div>
+      </div>
+      <button type="button" data-field="refresh" aria-label="Refresh return departures">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+          <path d="M21 3v6h-6"/>
+        </svg>
+        Refresh
+      </button>
+    </footer>
+
+    <div class="progress"><i data-field="bar"></i></div>
+  </main>
+
+  <p class="source">Real-time ETA · Citybus open data (DATA.GOV.HK) · B3A</p>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const REFRESH_MS = 30000;
+  const API = "https://rt.data.gov.hk/v2/transport/citybus/eta/CTB";
+
+  const CONFIG = [
+    {
+      key: "out",
+      stop: "003261",   // Fu Tai Estate, Castle Peak Road (outbound)
+      dir: "O",
+      empty: "No upcoming B3A departures from Fu Tai Estate are listed right now. " +
+             "This route runs at a limited frequency — try refreshing in a moment."
+    },
+    {
+      key: "in",
+      stop: "003208",   // Shenzhen Bay Port (inbound origin)
+      dir: "I",
+      empty: "No upcoming B3A departures from Shenzhen Bay Port are listed right now. " +
+             "This route runs at a limited frequency — try refreshing in a moment."
+    }
+  ];
+
+  const HK_TIME = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Hong_Kong",
+    hour: "2-digit", minute: "2-digit", hourCycle: "h23"
+  });
+  const HK_TIME_SEC = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Hong_Kong",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"
+  });
+  const clock = (ms) => HK_TIME.format(new Date(ms));
+
+  function minutesUntil(eta, now) {
+    const diff = eta - now;
+    if (diff <= 60000) return 0;              // under a minute / due
+    return Math.round(diff / 60000);
+  }
+
+  const cards = CONFIG.map(cfg => {
+    const root = document.querySelector(`[data-card="${cfg.key}"]`);
+    const q = (name) => root.querySelector(`[data-field="${name}"]`);
+    return {
+      ...cfg,
+      root,
+      refs: {
+        live: q("live"), liveText: q("liveText"),
+        nextMin: q("nextMin"), nextUnit: q("nextUnit"), nextSub: q("nextSub"),
+        listTitle: q("listTitle"), listCount: q("listCount"), laterList: q("laterList"),
+        empty: q("empty"), error: q("error"),
+        updated: q("updated"), refresh: q("refresh"), bar: q("bar")
+      },
+      state: { buses: [], fetchedAt: null, error: null }
+    };
+  });
+
+  function restartBar(card) {
+    const bar = card.refs.bar;
+    bar.style.animation = "none";
+    void bar.offsetWidth;
+    bar.style.animation = `shrink ${REFRESH_MS}ms linear forwards`;
+  }
+
+  function setStatus(card) {
+    const { live, liveText } = card.refs;
+    const age = card.state.fetchedAt ? Date.now() - card.state.fetchedAt : Infinity;
+    let mode = "live", label = "Live";
+    if (card.state.error) { mode = "offline"; label = "Offline"; }
+    else if (!card.state.fetchedAt || age > 90000) { mode = "stale"; label = "Stale"; }
+    live.className = "live " + mode;
+    liveText.textContent = label;
+  }
+
+  function renderCard(card) {
+    const now = Date.now();
+    const { refs } = card;
+    const buses = card.state.buses.filter(b => b.eta > now - 60000);
+
+    refs.error.hidden = !card.state.error;
+    if (card.state.error) {
+      refs.error.textContent = card.state.fetchedAt
+        ? `Live data unavailable (${card.state.error}). Showing last update from ` +
+          `${HK_TIME_SEC.format(new Date(card.state.fetchedAt))}. Retrying in 30 s.`
+        : `Could not load live data (${card.state.error}). Retrying in 30 s.`;
+    }
+
+    if (card.state.fetchedAt) {
+      refs.updated.textContent = HK_TIME_SEC.format(new Date(card.state.fetchedAt));
+    }
+    setStatus(card);
+
+    if (!buses.length) {
+      refs.nextMin.textContent = "—";
+      refs.nextMin.classList.remove("due");
+      refs.nextUnit.textContent = "";
+      refs.nextSub.textContent = card.state.fetchedAt
+        ? "No upcoming departures listed."
+        : "Connecting to DATA.GOV.HK…";
+      refs.empty.hidden = !card.state.fetchedAt || !!card.state.error;
+      refs.empty.textContent = card.empty;
+      refs.listTitle.hidden = true;
+      refs.laterList.replaceChildren();
+      return;
+    }
+
+    refs.empty.hidden = true;
+
+    const first = buses[0];
+    const m = minutesUntil(first.eta, now);
+    if (m <= 0) {
+      refs.nextMin.textContent = "Due";
+      refs.nextMin.classList.add("due");
+      refs.nextUnit.textContent = "";
+    } else {
+      refs.nextMin.textContent = String(m);
+      refs.nextMin.classList.remove("due");
+      refs.nextUnit.textContent = m === 1 ? "min" : "mins";
+    }
+
+    refs.nextSub.replaceChildren();
+    const depart = document.createElement("span");
+    depart.append("Departs ");
+    const t = document.createElement("b");
+    t.textContent = clock(first.eta);
+    depart.append(t);
+    refs.nextSub.append(depart);
+    if (first.remark) {
+      const r = document.createElement("span");
+      r.className = "remark";
+      r.textContent = first.remark;
+      refs.nextSub.append(r);
+    }
+
+    const later = buses.slice(1, 4);
+    refs.listTitle.hidden = later.length === 0;
+    refs.listCount.textContent = later.length ? `${later.length} more` : "";
+    refs.laterList.replaceChildren();
+
+    for (const bus of later) {
+      const li = document.createElement("li");
+
+      const time = document.createElement("div");
+      time.className = "row-time";
+      time.textContent = clock(bus.eta);
+      if (bus.remark) {
+        const rm = document.createElement("span");
+        rm.textContent = bus.remark;
+        time.append(rm);
+      }
+
+      const min = document.createElement("div");
+      min.className = "row-min";
+      const mm = minutesUntil(bus.eta, now);
+      if (mm <= 0) {
+        min.textContent = "Due";
+      } else {
+        min.textContent = `${mm} `;
+        const unit = document.createElement("span");
+        unit.className = "m";
+        unit.textContent = mm === 1 ? "min" : "mins";
+        min.append(unit);
+      }
+
+      li.append(time, min);
+      refs.laterList.append(li);
+    }
+  }
+
+  function renderAll() {
+    for (const card of cards) renderCard(card);
+  }
+
+  async function loadCard(card) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 12000);
+
+    try {
+      const res = await fetch(`${API}/${card.stop}/B3A`, {
+        cache: "no-store",
+        signal: ctrl.signal
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+
+      const json = await res.json();
+      const rows = Array.isArray(json.data) ? json.data : [];
+
+      card.state.buses = rows
+        .filter(r => r && r.dir === card.dir && r.stop === card.stop && r.eta)
+        .map(r => ({
+          eta: Date.parse(r.eta),
+          remark: (r.rmk_en || "").trim()
+        }))
+        .filter(b => Number.isFinite(b.eta))
+        .sort((a, b) => a.eta - b.eta);
+
+      card.state.fetchedAt = Date.now();
+      card.state.error = null;
+    } catch (err) {
+      card.state.error =
+        err && err.name === "AbortError" ? "request timed out" :
+        (err && err.message) ? err.message : "network error";
+    } finally {
+      clearTimeout(timer);
+      card.refs.refresh.disabled = false;
+    }
+  }
+
+  let busy = false;
+
+  async function refreshAll() {
+    if (busy) return;
+    busy = true;
+    for (const card of cards) {
+      card.refs.refresh.disabled = true;
+      restartBar(card);
+    }
+    await Promise.all(cards.map(loadCard));
+    busy = false;
+    renderAll();
+  }
+
+  async function refreshCard(card) {
+    if (busy) return;
+    busy = true;
+    card.refs.refresh.disabled = true;
+    restartBar(card);
+    await loadCard(card);
+    busy = false;
+    renderCard(card);
+  }
+
+  for (const card of cards) {
+    card.refs.refresh.addEventListener("click", () => refreshCard(card));
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) return;
+    const stale = cards.some(c =>
+      !c.state.fetchedAt || Date.now() - c.state.fetchedAt > REFRESH_MS
+    );
+    if (stale) refreshAll();
+  });
+
+  renderAll();
+  refreshAll();
+  setInterval(refreshAll, REFRESH_MS);
+  setInterval(renderAll, 1000);
+})();
+</script>
+</body>
+</html>
